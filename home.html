@@ -1,8 +1,8 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Home | page</title>
 
     <!-- tailwind + daisyUI -->
@@ -32,11 +32,47 @@
 
     <!-- css -->
     <link rel="stylesheet" href="./style.css" />
+  </head>
+  <body>
+    <!-- navbar -->
+    <header>
+      <div class="flex flex-col gap-4 items-center md:flex md:flex-row md:justify-between md:items-end py-5 bg-base-100 shadow-sm px-20">
+        <div class="flex-1">
+          <div class="flex items-center gap-2">
+            <div class="w-10">
+              <img src="./assets/github-logo.png" alt="" />
+            </div>
+            <h2 class="text-2xl font-bold">GitHub Issues Tracker</h2>
+            <!-- <a class="btn btn-ghost text-xl">daisyUI</a> -->
+          </div>
+        </div>
+        <div class="flex gap-2">
+          <label class="input">
+            <svg
+              class="h-[1em] opacity-50"
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+            >
+              <g
+                stroke-linejoin="round"
+                stroke-linecap="round"
+                stroke-width="2.5"
+                fill="none"
+                stroke="currentColor"
+              >
+                <circle cx="11" cy="11" r="8"></circle>
+                <path d="m21 21-4.3-4.3"></path>
+              </g>
+            </svg>
+            <input type="search" required placeholder="Search" />
+          </label>
 
-</head>
-<body>
-    
+          <button class="btn btn-primary">+ New Issue</button>
+        </div>
+      </div>
+    </header>
+
     <!-- javascript -->
     <script src="./script/home.js"></script>
-</body>
+  </body>
 </html>
