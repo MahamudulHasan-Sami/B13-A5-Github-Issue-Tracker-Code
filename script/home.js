@@ -7,10 +7,8 @@ const allBtn = document.getElementById("allBtn");
 const openBtn = document.getElementById("openBtn");
 const closeBtn = document.getElementById("closeBtn");
 
-
 // toggle buttons
 function toggleBtns(id) {
-
   allBtn.classList.remove("btn-primary");
   openBtn.classList.remove("btn-primary");
   closeBtn.classList.remove("btn-primary");
@@ -32,10 +30,8 @@ function toggleBtns(id) {
   updateCount();
 }
 
-
 // count lists
 function countList(issue) {
-
   allList.push(issue);
 
   if (issue.status === "open") {
@@ -45,48 +41,40 @@ function countList(issue) {
   if (issue.status === "closed") {
     closeList.push(issue);
   }
-
 }
-
 
 // load all issues
 async function loadIssues() {
-
   const res = await fetch(
-    "https://phi-lab-server.vercel.app/api/v1/lab/issues"
+    "https://phi-lab-server.vercel.app/api/v1/lab/issues",
   );
 
   const data = await res.json();
 
   displayIssues(data);
-
 }
 
 loadIssues();
 
-
 // process issues
 function displayIssues(issues) {
-
-  issues.data.forEach(issue => {
+  issues.data.forEach((issue) => {
     countList(issue);
   });
 
   renderIssues(allList);
   updateCount();
-
 }
-
 
 // render cards
 function renderIssues(list) {
-
   allIssuesSection.innerHTML = "";
 
-  list.forEach(issue => {
-
+  list.forEach((issue) => {
     const labelsHTML = issue.labels
-      .map(label => `<span class="badge bg-warning font-medium">${label}</span>`)
+      .map(
+        (label) => `<span class="badge bg-warning font-medium">${label}</span>`,
+      )
       .join("");
 
     const div = document.createElement("div");
@@ -120,107 +108,106 @@ function renderIssues(list) {
             <p class="text-[12px] text-gray-500">${new Date(issue.updatedAt).toLocaleDateString()}</p>
         </div>
     `;
-
     allIssuesSection.appendChild(div);
-
   });
-
 }
-
 
 // dynamic issue count
 function updateCount() {
-
   const countText = document.querySelector(".issues-section-left span");
 
   if (allBtn.classList.contains("btn-primary")) {
     countText.innerText = allList.length;
   }
-
   if (openBtn.classList.contains("btn-primary")) {
     countText.innerText = openList.length;
   }
-
   if (closeBtn.classList.contains("btn-primary")) {
     countText.innerText = closeList.length;
   }
-
 }
-
 
 // single issue modal
 async function loadSingleIssue(id) {
-
   const res = await fetch(
-    `https://phi-lab-server.vercel.app/api/v1/lab/issue/${id}`
+    `https://phi-lab-server.vercel.app/api/v1/lab/issue/${id}`,
   );
-
   const data = await res.json();
-
   const issue = data.data;
-
   showModal(issue);
-
 }
-
 
 // create modal dynamically
 function showModal(issue) {
+  const labelsHTML = issue.labels
+    .map(
+      (label) => `<span class="badge bg-warning font-medium">${label}</span>`,
+    )
+    .join("");
 
   let modal = document.getElementById("issueModal");
 
   if (!modal) {
-
     modal = document.createElement("dialog");
     modal.id = "issueModal";
     modal.className = "modal";
 
     document.body.appendChild(modal);
-
   }
 
   modal.innerHTML = `
-  <div class="modal-box">
-      <h3 class="font-bold text-lg">${issue.title}</h3>
-      <p class="py-4">${issue.description}</p>
-
-      <div class="text-sm text-gray-500 space-y-1">
-          <p>Author: ${issue.author}</p>
-          <p>Status: ${issue.status}</p>
-          <p>Priority: ${issue.priority}</p>
-      </div>
+        <div class="modal-box space-y-5">
+        <h3 class="font-bold text-lg">${issue.title}</h3>
+          <div class="flex items-center gap-3">
+            <span class="badge">${issue.status}</span>
+            <div class="text-[12px] text-gray-600">
+              <span>• Opened by </span>${issue.author}<span></span>
+            </div>
+            <div class="text-[12px] text-gray-600">
+              <span>• </span>${new Date(issue.createdAt).toLocaleDateString()}<span></span>
+            </div>
+          </div>
+          <p class="text-gray-600">${issue.description}</p>
+          <div>
+            ${labelsHTML}
+        </div>
+          <div class="bg-base-200 p-5 m-2 rounded-lg flex justify-between">
+            <div class="flex flex-col">
+              <span class="text-gray-600">Assigee:</span>
+              <span class="font-bold">${issue.assignee ? issue.assignee : "undefined"}</span>
+            </div>
+            <div class="flex flex-col">
+              <span class="text-gray-600">Priority:</span>
+              <span class="font-bold"><span class="badge">${issue.priority}</span></span>
+            </div>
+          </div>
 
       <div class="modal-action">
           <form method="dialog">
-              <button class="btn">Close</button>
+              <button class="btn btn-primary">Close</button>
           </form>
       </div>
   </div>
   `;
 
   modal.showModal();
-
 }
-
 
 // search issues
 async function searchIssue(text) {
-
   if (text === "") {
     renderIssues(allList);
     return;
   }
 
   const res = await fetch(
-    `https://phi-lab-server.vercel.app/api/v1/lab/issues/search?q=${text}`
+    `https://phi-lab-server.vercel.app/api/v1/lab/issues/search?q=${text}`,
   );
 
   const data = await res.json();
 
   renderIssues(data.data);
-
 }
-
 
 // attach search input listener
 const searchInput = document.querySelector("input[type='search']");
@@ -228,5 +215,3 @@ const searchInput = document.querySelector("input[type='search']");
 searchInput.addEventListener("keyup", (e) => {
   searchIssue(e.target.value);
 });
-
-
