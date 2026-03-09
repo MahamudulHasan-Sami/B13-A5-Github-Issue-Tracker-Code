@@ -7,8 +7,22 @@ const allBtn = document.getElementById("allBtn");
 const openBtn = document.getElementById("openBtn");
 const closeBtn = document.getElementById("closeBtn");
 
+// loader added
+const loader = document.getElementById("loader");
+
+function showLoader() {
+  loader.classList.remove("hidden");
+}
+
+function hideLoader() {
+  loader.classList.add("hidden");
+}
+
 // toggle buttons
 function toggleBtns(id) {
+
+  showLoader();
+
   allBtn.classList.remove("btn-primary");
   openBtn.classList.remove("btn-primary");
   closeBtn.classList.remove("btn-primary");
@@ -28,6 +42,8 @@ function toggleBtns(id) {
   }
 
   updateCount();
+
+  setTimeout(hideLoader, 200);
 }
 
 // count lists
@@ -45,6 +61,9 @@ function countList(issue) {
 
 // load all issues
 async function loadIssues() {
+
+  showLoader();
+
   const res = await fetch(
     "https://phi-lab-server.vercel.app/api/v1/lab/issues",
   );
@@ -52,6 +71,8 @@ async function loadIssues() {
   const data = await res.json();
 
   displayIssues(data);
+
+  hideLoader();
 }
 
 loadIssues();
@@ -127,7 +148,7 @@ function updateCount() {
   }
 }
 
-// single issue modal
+// single issue modal (unchanged)
 async function loadSingleIssue(id) {
   const res = await fetch(
     `https://phi-lab-server.vercel.app/api/v1/lab/issue/${id}`,
@@ -137,11 +158,39 @@ async function loadSingleIssue(id) {
   showModal(issue);
 }
 
-// create modal dynamically
+// search issues
+async function searchIssue(text) {
+
+  showLoader();
+
+  if (text === "") {
+    renderIssues(allList);
+    hideLoader();
+    return;
+  }
+
+  const res = await fetch(
+    `https://phi-lab-server.vercel.app/api/v1/lab/issues/search?q=${text}`,
+  );
+
+  const data = await res.json();
+
+  renderIssues(data.data);
+
+  hideLoader();
+}
+
+const searchInput = document.querySelector("input[type='search']");
+
+searchInput.addEventListener("keyup", (e) => {
+  searchIssue(e.target.value);
+});
+
+
 function showModal(issue) {
   const labelsHTML = issue.labels
     .map(
-      (label) => `<span class="badge bg-warning font-medium">${label}</span>`,
+      (label) => `<span class="badge bg-warning font-medium">${label}</span>`
     )
     .join("");
 
@@ -158,27 +207,36 @@ function showModal(issue) {
   modal.innerHTML = `
         <div class="modal-box space-y-5">
         <h3 class="font-bold text-lg">${issue.title}</h3>
+
           <div class="flex items-center gap-3">
             <span class="badge">${issue.status}</span>
+
             <div class="text-[12px] text-gray-600">
-              <span>• Opened by </span>${issue.author}<span></span>
+              <span>• Opened by </span>${issue.author}
             </div>
+
             <div class="text-[12px] text-gray-600">
-              <span>• </span>${new Date(issue.createdAt).toLocaleDateString()}<span></span>
+              <span>• </span>${new Date(issue.createdAt).toLocaleDateString()}
             </div>
           </div>
+
           <p class="text-gray-600">${issue.description}</p>
+
           <div>
             ${labelsHTML}
-        </div>
+          </div>
+
           <div class="bg-base-200 p-5 m-2 rounded-lg flex justify-between">
             <div class="flex flex-col">
               <span class="text-gray-600">Assigee:</span>
               <span class="font-bold">${issue.assignee ? issue.assignee : "undefined"}</span>
             </div>
+
             <div class="flex flex-col">
               <span class="text-gray-600">Priority:</span>
-              <span class="font-bold"><span class="badge">${issue.priority}</span></span>
+              <span class="font-bold">
+                <span class="badge">${issue.priority}</span>
+              </span>
             </div>
           </div>
 
@@ -192,26 +250,3 @@ function showModal(issue) {
 
   modal.showModal();
 }
-
-// search issues
-async function searchIssue(text) {
-  if (text === "") {
-    renderIssues(allList);
-    return;
-  }
-
-  const res = await fetch(
-    `https://phi-lab-server.vercel.app/api/v1/lab/issues/search?q=${text}`,
-  );
-
-  const data = await res.json();
-
-  renderIssues(data.data);
-}
-
-// attach search input listener
-const searchInput = document.querySelector("input[type='search']");
-
-searchInput.addEventListener("keyup", (e) => {
-  searchIssue(e.target.value);
-});

@@ -33,7 +33,14 @@
     <!-- css -->
     <link rel="stylesheet" href="./style.css" />
   </head>
+
   <body class="bg-[#f4f6f8] min-h-screen">
+
+    <!-- LOADER ADDED -->
+    <div id="loader" class="fixed inset-0 flex items-center justify-center bg-black/20 z-50 hidden">
+      <span class="loading loading-spinner loading-xl"></span>
+    </div>
+
     <!-- navbar -->
     <header>
       <div
@@ -45,7 +52,6 @@
               <img src="./assets/github-logo.png" alt="" />
             </div>
             <h2 class="text-2xl font-bold">GitHub Issues Tracker</h2>
-            <!-- <a class="btn btn-ghost text-xl">daisyUI</a> -->
           </div>
         </div>
         <div class="flex gap-2">
@@ -77,11 +83,7 @@
     <main>
       <!-- all three buttons -->
       <section class="w-11/12 mx-auto bg-white p-6 rounded-lg flex gap-3 mb-5">
-        <button
-          onclick="toggleBtns(allBtn)"
-          id="allBtn"
-          class="btn btn-primary"
-        >
+        <button onclick="toggleBtns(allBtn)" id="allBtn" class="btn btn-primary">
           All
         </button>
         <button onclick="toggleBtns(openBtn)" id="openBtn" class="btn">
@@ -107,11 +109,13 @@
             <p class="text-gray-500">Track and manage your project issues</p>
           </div>
         </div>
+
         <div class="issues-section-right flex gap-5 ml-5">
           <div class="flex items-center gap-2">
             <div class="w-3 h-3 bg-green-600 rounded-full"></div>
             <p class="font-medium">Open</p>
           </div>
+
           <div class="flex items-center gap-2">
             <div class="w-3 h-3 bg-purple-600 rounded-full"></div>
             <p class="font-medium">Close</p>
@@ -119,15 +123,12 @@
         </div>
       </section>
 
-      <!-- modal -->
-
       <!-- all issues section -->
       <section class="w-11/12 mx-auto">
         <div
           id="allIssuesSection"
           class="bg-base-200 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 p-5"
         >
-          <!-- dynamic issues -->
         </div>
       </section>
     </main>
